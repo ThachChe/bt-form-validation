@@ -11,6 +11,13 @@ export default function FormStudent() {
 
   const getInfoStudent = (event) => {
     event.preventDefault();
+    const isDuplicate = listStudent.some((item) => item.maSV === student.maSV);
+
+    if (isDuplicate) {
+      alert("Mã sinh viên này đã tồn tại! Vui lòng nhập mã khác.");
+      return; // Dừng hàm lại, không chạy code phía dưới nữa
+    }
+
     const cloneListStudent = [...listStudent];
     cloneListStudent.push(student);
     setListStudent(cloneListStudent);
@@ -19,20 +26,37 @@ export default function FormStudent() {
   const renderListInfo = (event) => {
     return listStudent.map((students) => {
       return (
-        <tr>
+        <tr key={students.maSV}>
           <th className="px-4 py-2">{students.maSV}</th>
           <th className="px-4 py-2">{students.name}</th>
           <th className="px-4 py-2">{students.phone}</th>
           <th className="px-4 py-2">{students.email}</th>
-          <button
-            type="button"
-            className="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-          >
-            Delete
-          </button>
+          <th className="px-4 py-2">
+            <button
+              onClick={() => handleDelete(students.maSV)}
+              type="button"
+              className="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+            >
+              Delete
+            </button>
+          </th>
         </tr>
       );
     });
+  };
+
+  const _findIndexInfo = (list, maSV) => {
+    return list.findIndex((students) => students.maSV === maSV);
+  };
+
+  const handleDelete = (maSV) => {
+    const index = _findIndexInfo(listStudent, maSV);
+
+    if (index != 1) {
+      const cloneListStudent = [...listStudent];
+      cloneListStudent.splice(index, 1);
+      setListStudent(cloneListStudent);
+    }
   };
 
   const handleOnChange = (event) => {
